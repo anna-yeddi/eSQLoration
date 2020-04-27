@@ -45,3 +45,27 @@ select cl.city customer_city,
 	cl."name" customer_name
 	from customer_list cl
 	order by customer_city;
+	
+
+
+-- 2.1. Customers location (tables only):
+select distinct c.customer_id,
+	c.first_name || ' ' || c.last_name customer_name,
+	ct.city, a.district, co.country
+	from customer c
+	join address a using(address_id)
+	join city ct using(city_id)
+	join country co using(country_id)
+	order by city;
+
+-- 1.1. Stores with more than 300 customers (tables only):
+select distinct s.store_id,
+	a.address || ', ' || ct.city || ', ' || a.district || ', ' || co.country as store_address
+	from store s
+	join address a using(address_id)
+	join city ct using(city_id)
+	join country co using(country_id)
+	where s.store_id in (select c.store_id
+							from customer c
+							group by c.store_id
+							having count(distinct c.customer_id) > 300);
