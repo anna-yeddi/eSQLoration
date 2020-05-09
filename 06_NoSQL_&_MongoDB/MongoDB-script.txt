@@ -1,0 +1,41 @@
+-- MongoDB:
+
+--- Создать свою базу данных:
+use akova
+
+--- Создать коллекцию пользователей:
+db.createCollection('users')
+
+--- Добавить информацию по 2-м людям с полями ФИО + контактная информация (вложенный документ):
+db.users.insert([
+	{
+		firstName: "Base",
+		lastName: "Shell",
+		contacts: {
+			phone: "8-901-234-5678",
+			email: "b.shell@yopmail.com"
+		}
+	},
+	{
+		firstName: "Crud",
+		lastName: "Cluster",
+		contacts: {
+			phone: "1-234-567-8901",
+			email: "crud.cluster@yopmail.net",
+			twitter: "@crudster123"
+		}
+	}
+])
+
+--- Вывести количество контактов у каждого человека (доп.):
+db.users.aggregate([
+	{
+		$set: {
+			totalContacts: {
+				$size: {
+					$objectToArray: "$contacts"
+				}
+			}
+		}
+	}
+]).pretty()

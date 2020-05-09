@@ -133,6 +133,8 @@ select customer_id id_delta,
 	'not in view bts_upd' as delta_note
 	from customer_films_with_bts cfwb;
 	
+
+
 --- 2.c. Explain results:
 
 
@@ -335,3 +337,23 @@ select r.customer_id,
 	r.inventory_id 
 	from rental r ;
 	
+
+
+--- Simpliest query:
+explain analyze
+select r.customer_id,
+	count(inventory_id) films_rented
+	from rental r
+	left join inventory i using (inventory_id)
+	left join film f using (film_id)
+	where 'Behind the Scenes' = any(f.special_features)
+	group by customer_id;
+
+select distinct cu.first_name || ' ' || cu.last_name as customer_name,
+	count(r.inventory_id) films_rented
+	from customer cu
+	left join rental r using (customer_id)
+	left join inventory i using (inventory_id)
+	left join film f using (film_id)
+	where 'Behind the Scenes' = any(f.special_features)
+	group by cu.first_name, cu.last_name;
